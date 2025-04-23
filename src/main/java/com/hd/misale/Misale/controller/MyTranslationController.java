@@ -1,0 +1,28 @@
+package com.hd.misale.Misale.controller;
+
+
+import com.hd.misale.Misale.service.MyTranslationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(path = "/translate", consumes = "application/json" , produces= "application/json")
+public class MyTranslationController {
+
+    @Autowired
+    MyTranslationService myTranslationService;
+
+    @PostMapping("/la2am")
+    public String latin2amharic(@RequestBody String latinAmharicText) {
+        return myTranslationService.getAmharicFidel(latinAmharicText);
+    }
+
+    @PostMapping("/en2am")
+    public String english2amharic(@RequestBody String englishText) {
+        return myTranslationService.getAmharicTranslation(englishText);
+    }
+}

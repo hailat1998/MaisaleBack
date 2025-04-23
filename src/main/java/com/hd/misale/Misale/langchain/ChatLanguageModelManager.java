@@ -1,12 +1,8 @@
 package com.hd.misale.Misale.langchain;
 
-import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 
@@ -29,7 +25,7 @@ public class ChatLanguageModelManager {
         // Verify the correct model name. "gemini-2.0-flash" might not be standard.
         // Common options: "gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-1.0-pro"
         // Using "gemini-1.5-flash-latest" as a likely valid example.
-        String modelName = "gemini-2.0-flash-latest"; // <-- Adjust if needed
+        String modelName = "gemini-2.0-flash"; // <-- Adjust if needed
 
         log.info("Initializing Google AI Gemini Chat Model ({})...", modelName);
 
@@ -59,10 +55,13 @@ public class ChatLanguageModelManager {
 
         // Construct a clear prompt for the LLM
         String prompt = String.format(
-                "Translate the following English text accurately into Amharic. " +
-                        "Provide only the Amharic translation, without any explanations or labels.\n\n" +
-                        "English: %s\n\n" +
-                        "Amharic:",
+                """
+                        Translate the following English text accurately into Amharic. \
+                        Provide only the Amharic translation, without any explanations or labels.
+                        
+                        English: %s
+                        
+                        Amharic:""",
                 userMessage
         );
 
@@ -93,11 +92,14 @@ public class ChatLanguageModelManager {
 
         // Construct a clear prompt for the LLM
         String prompt = String.format(
-                "Convert the following Amharic text, which is written phonetically using Latin letters, " +
-                        "into the standard Amharic Fidel script. " +
-                        "Provide only the Amharic script output, without any explanations or labels.\n\n" +
-                        "Input (Latin Script Amharic): %s\n\n" +
-                        "Output (Amharic Fidel Script):",
+                """
+                        Convert the following Amharic text, which is written phonetically using Latin letters, \
+                        into the standard Amharic Fidel script. \
+                        Provide only the Amharic script output, without any explanations or labels.
+                        
+                        Input (Latin Script Amharic): %s
+                        
+                        Output (Amharic Fidel Script):""",
                 userMessage
         );
 
@@ -131,9 +133,12 @@ public class ChatLanguageModelManager {
         // "In the Amharic language, explain the following Amharic proverb/expression: '{proverb}'. Provide only the explanation."
         // Note: Ensure your source files are UTF-8 encoded to handle Amharic characters correctly.
         String prompt = String.format(
-                "በአማርኛ ቋንቋ የሚከተለውን የአማርኛ አባባል ትርጉም አብራራ/ያስረዳ። ማብራሪያውን ብቻ መልስ።\n\n" +
-                        "አባባል፦ \"%s\"\n\n" +
-                        "ማብራሪያ፦",
+                """
+                        በአማርኛ ቋንቋ የሚከተለውን የአማርኛ አባባል ትርጉም አብራራ/ያስረዳ። ማብራሪያውን ብቻ መልስ።
+                        
+                        አባባል፦ "%s"
+                        
+                        ማብራሪያ፦""",
                 userMessage
         );
 
