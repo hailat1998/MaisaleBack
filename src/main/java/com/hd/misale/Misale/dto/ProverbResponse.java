@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProverbRequest {
-    private String proverb;
+public class ProverbResponse implements Serializable {
+    String en_meaning;
+    String am_meaning;
 }

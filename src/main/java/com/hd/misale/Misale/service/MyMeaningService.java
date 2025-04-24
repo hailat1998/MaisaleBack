@@ -1,8 +1,10 @@
 package com.hd.misale.Misale.service;
 
 
+import com.hd.misale.Misale.dto.ProverbResponse;
 import com.hd.misale.Misale.langchain.ChatLanguageModelManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,5 +21,10 @@ public class MyMeaningService {
     public String getAmharicMeaning(String proverb) {
 
         return modelManager.meaningInAmharic(proverb);
+    }
+
+    @Cacheable(value = "proverb", key = "#proverb")
+    public ProverbResponse getMeaning(String proverb) {
+        return new ProverbResponse(getEnglishMeaning(proverb), getAmharicMeaning(proverb));
     }
 }

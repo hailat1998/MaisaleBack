@@ -169,10 +169,13 @@ public class ChatLanguageModelManager {
 
         // Prompt in English asking for an explanation in English of the Amharic text.
         String prompt = String.format(
-                "Explain the meaning of the following Amharic proverb or expression in English. " +
-                        "Provide only the English explanation.\n\n" +
-                        "Amharic Proverb/Expression: \"%s\"\n\n" +
-                        "English Explanation:",
+                """
+                        Explain the meaning of the following Amharic proverb or expression in English. \
+                        Provide only the English explanation. Don't forget to add explanation
+                        
+                        Amharic Proverb/Expression: "%s"
+                        
+                        English Explanation:""",
                 userMessage // Pass the Amharic text directly here
         );
 
