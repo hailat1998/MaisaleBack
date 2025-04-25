@@ -1,6 +1,5 @@
 package com.hd.misale.Misale.service;
 
-
 import com.hd.misale.Misale.dto.ProverbResponse;
 import com.hd.misale.Misale.langchain.ChatLanguageModelManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,10 @@ public class MyMeaningService {
     ChatLanguageModelManager modelManager;
 
     public String getEnglishMeaning(String proverb) {
-
         return modelManager.meaningInEnglish(proverb);
     }
 
     public String getAmharicMeaning(String proverb) {
-
         return modelManager.meaningInAmharic(proverb);
     }
 
