@@ -4,6 +4,10 @@ import com.hd.misale.Misale.langchain.ChatLanguageModelManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+import java.time.Duration;
 
 @Service
 public class MyTranslationService {
@@ -16,13 +20,18 @@ public class MyTranslationService {
     }
 
     @Cacheable(value = "english", key = "#englishText")
-    public String getAmharicTranslation(String englishText) {
-        return modelManager.translateToAmharic(englishText);
+    public Mono<String> getAmharicTranslation(String englishText) {
+        return Mono.fromCallable(() -> modelManager.translateToAmharic(englishText))
+                .subscribeOn(Schedulers.boundedElastic()) // Offload blocking call
+                .timeout(Duration.ofSeconds(30)) // Add timeout
+                .onErrorResume(e -> Mono.just("Translation unavailable")); // Fallback
     }
 
     @Cacheable(value = "latin", key = "#latinAmharicText")
-    public String getAmharicFidel(String latinAmharicText) {
-        return modelManager.transliterationToAmharic(latinAmharicText);
+    public Mono<String> getAmharicFidel(String latinAmharicText) {
+        return Mono.fromCallable(() -> modelManager.transliterationToAmharic(latinAmharicText))
+                .subscribeOn(Schedulers.boundedElastic())
+                .timeout(Duration.ofSeconds(30))
+                .onErrorResume(e -> Mono.just("Transliteration unavailable"));
     }
-
 }

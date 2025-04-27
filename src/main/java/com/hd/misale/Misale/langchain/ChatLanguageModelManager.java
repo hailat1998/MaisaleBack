@@ -2,6 +2,7 @@ package com.hd.misale.Misale.langchain;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class ChatLanguageModelManager {
 
     // Make model final as it's initialized in the constructor
     public final ChatLanguageModel model;
+
 
     public ChatLanguageModelManager() {
         String apiKey = System.getenv("GEMINI_AI_KEY");
@@ -35,8 +37,7 @@ public class ChatLanguageModelManager {
                 .modelName(modelName)
                 // Optional parameters:
                 .temperature(0.3) // Lower temperature for more deterministic translations/transliterations
-                .topK(1)           // Consider setting topK/topP for focused results
-
+                .topK(1)         // Consider setting topK/topP for focused results
                 .build();
 
         log.info("Google AI Gemini Chat Model initialized successfully.");
