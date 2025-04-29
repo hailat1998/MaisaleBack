@@ -25,4 +25,9 @@ public class MyTranslationController {
     public Mono<String> english2amharic(@RequestBody String englishText) {
         return myTranslationService.getAmharicTranslation(englishText);
     }
+
+    @PostMapping("/enOrLa2am")
+    public Mono<String> englishOrLatin2amharic(@RequestBody String laOren) {
+        return myTranslationService.getAmharic(laOren);
+    }
 }

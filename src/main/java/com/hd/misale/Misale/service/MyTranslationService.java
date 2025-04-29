@@ -34,4 +34,12 @@ public class MyTranslationService {
                 .timeout(Duration.ofSeconds(30))
                 .onErrorResume(e -> Mono.just("Transliteration unavailable"));
     }
+
+    @Cacheable(value = "en|la", key="#enOrLa")
+    public Mono<String> getAmharic(String enOrLa) {
+        return Mono.fromCallable(() -> modelManager.processToAmharic(enOrLa))
+                .subscribeOn(Schedulers.boundedElastic())
+                .timeout(Duration.ofSeconds(30))
+                .onErrorResume(e -> Mono.just("Transliteration unavailable"));
+    }
 }

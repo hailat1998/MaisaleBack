@@ -192,6 +192,54 @@ public class ChatLanguageModelManager {
             return "[Meaning Explanation Error (English)]"; // User-friendly error
         }
     }
+
+
+    public String processToAmharic(String userMessage) {
+        if (userMessage == null || userMessage.trim().isEmpty()) {
+            log.warn("processToAmharic called with null or empty message.");
+            return ""; // Return empty for empty/null input
+        }
+
+        // Construct a unified prompt asking the LLM to determine the task
+        // and provide only the Amharic Fidel output.
+        // Construct a unified prompt asking the LLM to determine the task
+        // and provide only the Amharic Fidel output, with strong emphasis
+        // on TRUE translation for English input.
+        String prompt = String.format(
+                """
+                Carefully analyze the input text below. Your goal is to produce output *only* in standard Amharic Fidel script.
+
+                1.  **Determine the input type:** Is it English text or Amharic text written phonetically in Latin letters?
+                2.  **Perform the correct action:**
+                    * **If English:** Translate the *meaning* of the English text into standard Amharic Fidel script. Use appropriate Amharic vocabulary. **Crucially, do *not* just represent the English sounds using Amharic letters (do not transliterate English words); provide the actual Amharic *translation* conveying the intended meaning.** Only transliterate proper nouns if they have no common Amharic equivalent.
+                    * **If Latin-script Amharic:** Convert the text phonetically into its standard Amharic Fidel script representation (this is transliteration).
+
+                Provide *only* the final Amharic Fidel script output, with no other text, labels, or explanations.
+
+                Input Text: %s
+
+                Amharic Fidel Output:""",
+                userMessage
+        );
+
+        log.debug("Sending unified processing prompt to Gemini:\n{}", prompt); // Log the detailed prompt
+
+        try {
+            // Call the LLM with the unified prompt
+            String response = model.chat(prompt); // Use your actual method to call the model
+            log.debug("Received processing response from Gemini for input '{}': {}", userMessage, response);
+
+            // Trim whitespace which models sometimes add, especially around the output
+            return response.trim();
+
+        } catch (Exception e) {
+            // Log the error with input context for easier debugging
+            log.error("Error during unified processing to Amharic for input '{}': {}", userMessage, e.getMessage(), e);
+
+            // Return a distinct error message for this unified function
+            return "[Processing Error]";
+        }
+    }
 }
 
 

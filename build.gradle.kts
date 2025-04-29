@@ -1,27 +1,7 @@
-import org.springframework.boot.gradle.tasks.run.BootRun
-import java.util.Properties
 plugins {
 	java
 	id("org.springframework.boot") version "3.4.4"
 	id("io.spring.dependency-management") version "1.1.7"
-}
-
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-	localProperties.load(localPropertiesFile.inputStream())
-}
-
-
-val apiKey: String = localProperties.getProperty("gemini.api.key") ?: ""
-
-if (apiKey.isBlank()) {
-	throw GradleException("API key is missing in local.properties!")
-}
-
-tasks.named<BootRun>("bootRun") {
-	args("--gemini.api.key=${apiKey}")
 }
 
 
