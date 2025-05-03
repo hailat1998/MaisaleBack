@@ -38,6 +38,11 @@ dependencies {
 	implementation("io.projectreactor:reactor-core:3.7.5")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive:3.4.5")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3")
+	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.mockito:mockito-junit-jupiter")
 }
 
 tasks.withType<Test> {
