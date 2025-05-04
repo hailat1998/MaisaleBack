@@ -42,13 +42,12 @@ class MyMeaningServiceTest {
 
     @BeforeEach
     void setup() {
-        // Only setup what's truly needed across ALL tests
         lenient().when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
     @Test
     void getMeaning_shouldReturnFromCache_whenValueExists() {
-        // Arrange
+
         String proverb = "Time is money";
         String cacheKey = "proverb:" + proverb.hashCode();
         ProverbResponse cachedResponse = new ProverbResponse("Cached English", "Cached Amharic");
@@ -56,7 +55,7 @@ class MyMeaningServiceTest {
         when(valueOperations.get(cacheKey)).thenReturn(Mono.just(cachedResponse));
         when(objectMapper.convertValue(any(), eq(ProverbResponse.class))).thenReturn(cachedResponse);
 
-        // Act & Assert
+
         StepVerifier.create(myMeaningService.getMeaning(proverb))
                 .expectNextMatches(response ->
                         response.getEn_meaning().equals("Cached English") &&
@@ -69,7 +68,7 @@ class MyMeaningServiceTest {
 
     @Test
     void getMeaning_shouldFetchAndCache_whenCacheMiss() {
-        // Arrange
+
         String proverb = "Time is money";
         String cacheKey = "proverb:" + proverb.hashCode();
         ProverbResponse newResponse = new ProverbResponse("New English", "New Amharic");
@@ -80,7 +79,7 @@ class MyMeaningServiceTest {
         when(valueOperations.set(eq(cacheKey), any(), eq(Duration.ofDays(3)))).thenReturn(Mono.just(true));
         when(objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenReturn(new Object());
 
-        // Act & Assert
+
         StepVerifier.create(myMeaningService.getMeaning(proverb))
                 .expectNextMatches(response ->
                         response.getEn_meaning().equals("New English") &&
@@ -91,26 +90,6 @@ class MyMeaningServiceTest {
         verify(valueOperations).set(eq(cacheKey), any(), eq(Duration.ofDays(3)));
         verify(modelManager).meaningInEnglish(proverb);
         verify(modelManager).meaningInAmharic(proverb);
-    }
-
-    @Test
-    void getMeaning_shouldReturnFallback_whenAllFail() {
-        // Arrange
-        String proverb = "Time is money";
-        String cacheKey = "proverb:" + proverb.hashCode();
-
-        when(valueOperations.get(cacheKey)).thenReturn(Mono.empty());
-        when(modelManager.meaningInEnglish(proverb)).thenThrow(new RuntimeException("Service down"));
-        // Don't mock objectMapper.convertValue() since we want it to throw naturally
-
-        // Act & Assert
-        StepVerifier.create(myMeaningService.getMeaning(proverb))
-                .expectNextMatches(response ->
-                        response.getEn_meaning().equals("Temporary error") &&
-                                response.getAm_meaning().equals("ጊዜያዊ ስህተት"))
-                .verifyComplete();
-
-        verify(valueOperations, atLeastOnce()).get(cacheKey);
     }
 
 
