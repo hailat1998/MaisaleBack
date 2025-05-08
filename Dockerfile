@@ -26,6 +26,6 @@ COPY --from=builder extracted/application/ ./
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-EXPOSE 8761 6379
+EXPOSE 8080 6379
 
 ENTRYPOINT ["/start.sh"]

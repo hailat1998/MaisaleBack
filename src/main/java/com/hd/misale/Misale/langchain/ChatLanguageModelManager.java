@@ -172,7 +172,7 @@ public class ChatLanguageModelManager {
         String prompt = String.format(
                 """
                         Explain the meaning of the following Amharic proverb or expression in English. \
-                        Provide only the English explanation. Don't forget to add explanation
+                        Provide only the English explanation. Don't forget to give meaning before and then explanation.
                         
                         Amharic Proverb/Expression: "%s"
                         
