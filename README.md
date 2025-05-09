@@ -5,6 +5,8 @@
 ![Redis](https://img.shields.io/badge/Cache-Redis-red)
 ![Gemini AI](https://img.shields.io/badge/LLM-Gemini%20AI-purple)
 
+
+
 ## Overview
 
 This backend service is a crucial component of an Android application designed to handle Amharic language processing through Large Language Models (LLMs). The service efficiently manages client requests, forwards them to the LLM, caches results for performance optimization, and delivers responses back to the client.
@@ -119,5 +121,6 @@ chmod +x test_all.sh
 # Run the tests (replace with your server URL)
 ./test_all.sh http://localhost:8080
 ```
+### This project is one part of [MisaleawiAnegager](https://github.com/hailat1998/MisaleawiAnegager)
 
 Thank you for checking out this project! For questions or feedback, please open an issue on GitHub.

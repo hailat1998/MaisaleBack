@@ -12,32 +12,29 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ChatLanguageModelManager {
 
-    // Make model final as it's initialized in the constructor
+
     public final ChatLanguageModel model;
 
 
     public ChatLanguageModelManager() {
         String apiKey = System.getenv("GEMINI_AI_KEY");
         if (apiKey == null || apiKey.trim().isEmpty()) {
-            // Log error and potentially throw exception if API key is essential for startup
+
             log.error("FATAL: GEMINI_AI_KEY environment variable is not set!");
             throw new IllegalStateException("GEMINI_AI_KEY environment variable must be set.");
         }
 
-        // Verify the correct model name. "gemini-2.0-flash" might not be standard.
-        // Common options: "gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-1.0-pro"
-        // Using "gemini-1.5-flash-latest" as a likely valid example.
-        String modelName = "gemini-2.0-flash"; // <-- Adjust if needed
+
+        String modelName = "gemini-2.0-flash";
 
         log.info("Initializing Google AI Gemini Chat Model ({})...", modelName);
 
-        // Assuming you are using the Google AI (MakerSuite/AI Studio) API key directly
+
         this.model = GoogleAiGeminiChatModel.builder()
                 .apiKey(apiKey)
                 .modelName(modelName)
-                // Optional parameters:
-                .temperature(0.3) // Lower temperature for more deterministic translations/transliterations
-                .topK(1)         // Consider setting topK/topP for focused results
+                .temperature(0.3)
+                .topK(1)
                 .build();
 
         log.info("Google AI Gemini Chat Model initialized successfully.");
@@ -51,10 +48,10 @@ public class ChatLanguageModelManager {
     public String translateToAmharic(String userMessage) {
         if (userMessage == null || userMessage.trim().isEmpty()) {
             log.warn("translateToAmharic called with empty message.");
-            return ""; // Return empty for empty input
+            return "";
         }
 
-        // Construct a clear prompt for the LLM
+
         String prompt = String.format(
                 """
                         Translate the following English text accurately into Amharic. \
@@ -71,11 +68,11 @@ public class ChatLanguageModelManager {
         try {
             String response = model.chat(prompt);
             log.debug("Received translation response from Gemini: {}", response);
-            // Trim whitespace which models sometimes add
+
             return response.trim();
         } catch (Exception e) {
             log.error("Error during translation to Amharic for input '{}': {}", userMessage, e.getMessage(), e);
-            // Return a meaningful error message or re-throw a custom exception
+
             return "[Translation Error]";
         }
     }
@@ -91,7 +88,7 @@ public class ChatLanguageModelManager {
             return ""; // Return empty for empty input
         }
 
-        // Construct a clear prompt for the LLM
+
         String prompt = String.format(
                 """
                         Convert the following Amharic text, which is written phonetically using Latin letters, \
@@ -109,11 +106,11 @@ public class ChatLanguageModelManager {
         try {
             String response = model.chat(prompt);
             log.debug("Received transliteration response from Gemini: {}", response);
-            // Trim whitespace
+
             return response.trim();
         } catch (Exception e) {
             log.error("Error during transliteration to Amharic Fidel for input '{}': {}", userMessage, e.getMessage(), e);
-            // Return a meaningful error message or re-throw a custom exception
+
             return "[Transliteration Error]";
         }
     }
@@ -130,9 +127,7 @@ public class ChatLanguageModelManager {
             return "";
         }
 
-        // Prompt asking for explanation in Amharic, similar to the curl example structure.
-        // "In the Amharic language, explain the following Amharic proverb/expression: '{proverb}'. Provide only the explanation."
-        // Note: Ensure your source files are UTF-8 encoded to handle Amharic characters correctly.
+
         String prompt = String.format(
                 """
                         በአማርኛ ቋንቋ የሚከተለውን የአማርኛ አባባል ትርጉም አብራራ/ያስረዳ። ማብራሪያውን ብቻ መልስ።
@@ -146,12 +141,12 @@ public class ChatLanguageModelManager {
         log.debug("Sending Amharic meaning prompt to Gemini:\n{}", prompt);
 
         try {
-            // LangChain4j handles the JSON structuring ("contents", "parts", "text") internally
+
             String response = model.chat(prompt);
             log.debug("Received Amharic meaning response from Gemini: {}", response);
             return response.trim();
         } catch (Exception e) {
-            // Log the error with the original Amharic input for better context
+
             log.error("Error getting Amharic meaning for input '{}': {}", userMessage, e.getMessage(), e);
             return "[Meaning Explanation Error (Amharic)]"; // User-friendly error
         }
@@ -168,7 +163,7 @@ public class ChatLanguageModelManager {
             return "";
         }
 
-        // Prompt in English asking for an explanation in English of the Amharic text.
+
         String prompt = String.format(
                 """
                         Explain the meaning of the following Amharic proverb or expression in English. \
@@ -177,7 +172,7 @@ public class ChatLanguageModelManager {
                         Amharic Proverb/Expression: "%s"
                         
                         English Explanation:""",
-                userMessage // Pass the Amharic text directly here
+                userMessage
         );
 
         log.debug("Sending English meaning prompt to Gemini:\n{}", prompt);
@@ -187,9 +182,9 @@ public class ChatLanguageModelManager {
             log.debug("Received English meaning response from Gemini: {}", response);
             return response.trim();
         } catch (Exception e) {
-            // Log the error with the original Amharic input
+
             log.error("Error getting English meaning for input '{}': {}", userMessage, e.getMessage(), e);
-            return "[Meaning Explanation Error (English)]"; // User-friendly error
+            return "[Meaning Explanation Error (English)]";
         }
     }
 
@@ -197,14 +192,10 @@ public class ChatLanguageModelManager {
     public String processToAmharic(String userMessage) {
         if (userMessage == null || userMessage.trim().isEmpty()) {
             log.warn("processToAmharic called with null or empty message.");
-            return ""; // Return empty for empty/null input
+            return "";
         }
 
-        // Construct a unified prompt asking the LLM to determine the task
-        // and provide only the Amharic Fidel output.
-        // Construct a unified prompt asking the LLM to determine the task
-        // and provide only the Amharic Fidel output, with strong emphasis
-        // on TRUE translation for English input.
+
         String prompt = String.format(
                 """
                 Carefully analyze the input text below. Your goal is to produce output *only* in standard Amharic Fidel script.
@@ -222,21 +213,21 @@ public class ChatLanguageModelManager {
                 userMessage
         );
 
-        log.debug("Sending unified processing prompt to Gemini:\n{}", prompt); // Log the detailed prompt
+        log.debug("Sending unified processing prompt to Gemini:\n{}", prompt);
 
         try {
-            // Call the LLM with the unified prompt
+
             String response = model.chat(prompt); // Use your actual method to call the model
             log.debug("Received processing response from Gemini for input '{}': {}", userMessage, response);
 
-            // Trim whitespace which models sometimes add, especially around the output
+
             return response.trim();
 
         } catch (Exception e) {
-            // Log the error with input context for easier debugging
+
             log.error("Error during unified processing to Amharic for input '{}': {}", userMessage, e.getMessage(), e);
 
-            // Return a distinct error message for this unified function
+
             return "[Processing Error]";
         }
     }
