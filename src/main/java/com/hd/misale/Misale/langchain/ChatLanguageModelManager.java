@@ -33,7 +33,7 @@ public class ChatLanguageModelManager {
         this.model = GoogleAiGeminiChatModel.builder()
                 .apiKey(apiKey)
                 .modelName(modelName)
-                .temperature(0.3)
+                .temperature(0.7)
                 .topK(1)
                 .build();
 

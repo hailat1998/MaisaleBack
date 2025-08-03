@@ -75,7 +75,7 @@ public class RedisConfig {
         return new ReactiveRedisTemplate<>((ReactiveRedisConnectionFactory) connectionFactory, context);
     }
 
-    // Cache manager (unchanged)
+    // Cache manager
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
