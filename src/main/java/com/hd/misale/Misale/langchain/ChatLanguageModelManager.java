@@ -25,7 +25,7 @@ public class ChatLanguageModelManager {
         }
 
 
-        String modelName = "gemini-2.0-flash";
+        String modelName = "gemini-2.5-flash";
 
         log.info("Initializing Google AI Gemini Chat Model ({})...", modelName);
 
